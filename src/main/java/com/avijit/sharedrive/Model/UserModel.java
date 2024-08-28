@@ -1,11 +1,13 @@
 package com.avijit.sharedrive.Model;
 
+import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class UserModel {
+@Entity
+public class UserModel extends BaseModel{
     private String userName;
     private String userEmail;
     private String userPassword;
