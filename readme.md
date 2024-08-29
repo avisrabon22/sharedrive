@@ -31,9 +31,4 @@
 - MySQL Server
 - Maven (for building the Spring Boot application)
 
-### Frontend (React.js)
-
-1. **Navigate to the `frontend` directory:**
-   ```bash
-   cd frontend
-
+### Frontend (React
