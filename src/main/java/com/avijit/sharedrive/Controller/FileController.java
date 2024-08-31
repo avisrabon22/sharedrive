@@ -6,7 +6,9 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.RequestEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -21,7 +23,7 @@ public class FileController {
     }
 
     @PostMapping("/upload")
-    public String uploadFile(  FilePart file) {
+    public String uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
         fileHandlingInterface.uploadFile(file);
 
         return "File uploaded";

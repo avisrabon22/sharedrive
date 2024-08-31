@@ -13,8 +13,10 @@ import lombok.Setter;
 public class FileDetailsModel extends BaseModel{
     @Column(nullable = false)
     private String fileName;
+    @Column(nullable = false)
+    private String filePath;
     private String fileExtension;
-    private String fileSize;
+    private Long fileSize;
     @ManyToOne
     @JoinColumn(name = "file_owner_id")
     private UserModel fileOwner;
