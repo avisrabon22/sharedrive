@@ -1,16 +1,26 @@
 package com.avijit.sharedrive.Controller;
 
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.avijit.sharedrive.DTO.SignUpRequestDto;
+import com.avijit.sharedrive.Service.UserSignUpInterface;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/signup")
 public class SignUpController {
+    private final UserSignUpInterface userSignUpInterface;
+    private ResponseEntity<String> userSignedUp;
+
+    public SignUpController(UserSignUpInterface userSignUpInterface) {
+        this.userSignUpInterface = userSignUpInterface;
+    }
 
     @PostMapping
-    public String signUpUser() {
-        return "User Signed Up";
+    public ResponseEntity<String> signUpUser(@RequestBody SignUpRequestDto signUpRequestDto){
+        userSignUpInterface.signUpUser(signUpRequestDto);
+
+        return userSignedUp;
     }
 
 

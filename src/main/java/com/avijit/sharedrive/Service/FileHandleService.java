@@ -40,7 +40,7 @@ public class FileHandleService implements FileHandlingInterface{
         fileDetailsModel.setFileExtension(file.getContentType());
         fileDetailsModel.setFilePath(file.toString());
         fileDetailsModel.setFileSize(file.getSize());
-        userModel.setUserName("Avijit");
+        userModel.setUserName("avisrabon22@gmail.com");
         fileDetailsModel.setFileOwner(userModel);
 
         fileHandleRepo.save(fileDetailsModel);
