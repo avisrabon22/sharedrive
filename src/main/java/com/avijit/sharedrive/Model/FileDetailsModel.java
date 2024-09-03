@@ -1,9 +1,6 @@
 package com.avijit.sharedrive.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,7 +14,6 @@ public class FileDetailsModel extends BaseModel{
     private String filePath;
     private String fileExtension;
     private Long fileSize;
-    @ManyToOne
-    @JoinColumn(name = "file_owner_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
     private UserModel fileOwner;
 }
