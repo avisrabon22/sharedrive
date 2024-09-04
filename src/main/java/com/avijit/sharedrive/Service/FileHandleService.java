@@ -1,17 +1,21 @@
 package com.avijit.sharedrive.Service;
-
 import ch.qos.logback.core.util.StringUtil;
 import com.avijit.sharedrive.DAO.FileHandleRepo;
 import com.avijit.sharedrive.DAO.UserRepo;
 import com.avijit.sharedrive.DTO.FileDetailsRequestDto;
+import com.avijit.sharedrive.DTO.FileDetailsResponseDto;
 import com.avijit.sharedrive.Model.FileDetailsModel;
 import com.avijit.sharedrive.Model.UserModel;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.ResponseEntity;
 import org.springframework.http.codec.multipart.FilePart;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -31,8 +35,6 @@ public class FileHandleService implements FileHandlingInterface{
                                     .toAbsolutePath()
                                     .normalize();
         Files.createDirectories(this.storageLocation);
-
-
     }
 
     @Override
@@ -55,4 +57,19 @@ public class FileHandleService implements FileHandlingInterface{
 //   save the file details to the database
         fileHandleRepo.save(fileDetailsModel);
     }
+
+    @Override
+    public FileDetailsResponseDto downloadFile(Long fileId) throws MalformedURLException {
+        FileDetailsModel fileDetailsModel;
+            fileDetailsModel=fileHandleRepo.findById(fileId).orElse(null);
+
+            FileDetailsResponseDto fileDetailsResponseDto = new FileDetailsResponseDto();
+        assert fileDetailsModel != null;
+        fileDetailsResponseDto.setFileName(fileDetailsModel.getFileName());
+        fileDetailsResponseDto.setUrl(fileDetailsModel.getFilePath());
+        return  fileDetailsResponseDto;
+    }
+
+
 }
+
