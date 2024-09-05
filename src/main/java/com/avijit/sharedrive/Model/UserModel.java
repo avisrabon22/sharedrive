@@ -1,7 +1,6 @@
 package com.avijit.sharedrive.Model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -16,6 +15,7 @@ public class UserModel extends BaseModel{
     @Column(nullable = false)
     private String userPhone;
     private String userAddress;
-    @Column(nullable = false)
-    private String userRole;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false,name = "user_type_id")
+    private UserTypeModel userRole;
 }

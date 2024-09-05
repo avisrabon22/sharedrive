@@ -14,6 +14,7 @@ public class FileDetailsModel extends BaseModel{
     private String filePath;
     private String fileExtension;
     private Long fileSize;
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false,name = "user_id")
     private UserModel fileOwner;
 }

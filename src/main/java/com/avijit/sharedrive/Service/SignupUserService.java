@@ -3,6 +3,7 @@ package com.avijit.sharedrive.Service;
 import com.avijit.sharedrive.DAO.UserRepo;
 import com.avijit.sharedrive.DTO.SignUpRequestDto;
 import com.avijit.sharedrive.Model.UserModel;
+import com.avijit.sharedrive.Model.UserTypeModel;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,7 +27,9 @@ public class SignupUserService implements UserSignUpInterface{
         userModel.setUserPassword(signUpRequestDto.getUserPassword());
         userModel.setUserPhone(signUpRequestDto.getUserPhone());
         userModel.setUserAddress(signUpRequestDto.getUserAddress());
-        userModel.setUserRole(signUpRequestDto.getUserRole());
+        UserTypeModel userTypeModel = new UserTypeModel();
+        userTypeModel.setType(signUpRequestDto.getUserRole());
+        userModel.setUserRole(userTypeModel);
         userRepo.save(userModel);
     }
 }

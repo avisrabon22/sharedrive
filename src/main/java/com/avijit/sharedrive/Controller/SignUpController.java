@@ -16,12 +16,10 @@ public class SignUpController {
         this.userSignUpInterface = userSignUpInterface;
     }
 
-    @PostMapping
+    @PostMapping()
     public ResponseEntity<String> signUpUser(@RequestBody SignUpRequestDto signUpRequestDto){
         userSignUpInterface.signUpUser(signUpRequestDto);
 
         return userSignedUp;
     }
-
-
 }
