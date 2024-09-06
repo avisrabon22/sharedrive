@@ -1,6 +1,8 @@
 package com.avijit.sharedrive.Controller;
 
 import com.avijit.sharedrive.DTO.UserTypeRequestDto;
+import com.avijit.sharedrive.DTO.UserTypeResponseDto;
+import com.avijit.sharedrive.Exceptions.UserTypeExceptions;
 import com.avijit.sharedrive.Model.UserTypeModel;
 import com.avijit.sharedrive.Service.UserTypeService;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +21,9 @@ public class UserTypeController {
     }
 
     @PostMapping("/add")
-    public ResponseEntity<String> addUserType(@RequestBody UserTypeRequestDto userTypeRequestDto) {
-        userTypeService.addUserType(userTypeRequestDto);
-        return ResponseEntity.ok().body("User Type Added Successfully");
+    public ResponseEntity<UserTypeResponseDto> addUserType(@RequestBody UserTypeRequestDto userTypeRequestDto) throws UserTypeExceptions {
+             UserTypeResponseDto userTypeResponseDto=userTypeService.addUserType(userTypeRequestDto);
+
+        return ResponseEntity.ok().body(userTypeResponseDto);
     }
 }
