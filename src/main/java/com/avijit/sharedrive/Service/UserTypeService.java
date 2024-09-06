@@ -3,7 +3,7 @@ package com.avijit.sharedrive.Service;
 import com.avijit.sharedrive.DAO.UserTypeRepo;
 import com.avijit.sharedrive.DTO.UserTypeRequestDto;
 import com.avijit.sharedrive.DTO.UserTypeResponseDto;
-import com.avijit.sharedrive.Exceptions.UserTypeExceptions;
+import com.avijit.sharedrive.Exceptions.UserTypeExistExceptions;
 import com.avijit.sharedrive.Model.UserTypeModel;
 import org.springframework.stereotype.Service;
 
@@ -15,14 +15,14 @@ private  final UserTypeRepo userTypeRepo;
         this.userTypeRepo = userTypeRepo;
     }
 
-    public UserTypeResponseDto addUserType(UserTypeRequestDto userTypeRequestDto) throws UserTypeExceptions {
+    public UserTypeResponseDto addUserType(UserTypeRequestDto userTypeRequestDto) throws UserTypeExistExceptions {
         UserTypeModel userTypeModel = new UserTypeModel();
         UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
 
         boolean userTypeExist = userTypeRepo.existsByType(userTypeRequestDto.getUserType());
 
         if (userTypeExist){
-            throw new UserTypeExceptions("User Type Already Exist");
+            throw new UserTypeExistExceptions("User Type Already Exist");
         }
 
         userTypeModel.setType(userTypeRequestDto.getUserType());
