@@ -7,6 +7,10 @@ import com.avijit.sharedrive.Exceptions.UserTypeExistExceptions;
 import com.avijit.sharedrive.Model.UserTypeModel;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class UserTypeService implements UserTypeInterface{
 private  final UserTypeRepo userTypeRepo;
@@ -31,4 +35,24 @@ private  final UserTypeRepo userTypeRepo;
         return userTypeResponseDto;
     }
 
+    public UserTypeResponseDto UserTypeRemove(UserTypeRequestDto userTypeRequestDto) {
+        UserTypeModel userTypeModel = userTypeRepo.findByType(userTypeRequestDto.getUserType());
+        UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
+
+        userTypeRepo.delete(userTypeModel);
+        userTypeResponseDto.setMessage("User Type Removed Successfully");
+        return userTypeResponseDto;
+    }
+
+    public List<UserTypeResponseDto> GetUserType(){
+        List<UserTypeModel> userTypeModels = userTypeRepo.findAll();
+        List<UserTypeResponseDto> userTypeResponseDtos=new ArrayList<>();
+        for (UserTypeModel userTypeModel : userTypeModels) {
+           UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
+           userTypeResponseDto.setUserType(userTypeModel.getType());
+           userTypeResponseDto.setId(userTypeModel.getId());
+           userTypeResponseDtos.add(userTypeResponseDto);
+        }
+        return userTypeResponseDtos;
+    }
 }
