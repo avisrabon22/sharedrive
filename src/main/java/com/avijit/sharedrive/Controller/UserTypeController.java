@@ -7,6 +7,7 @@ import com.avijit.sharedrive.Exceptions.UserTypeExistExceptions;
 import com.avijit.sharedrive.Service.UserTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,6 +19,13 @@ public class UserTypeController {
         this.userTypeService = userTypeService;
     }
 
+// Get the all user type from the database *********************************
+    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/all")
+    public ResponseEntity<?> getUserType(){
+        return new ResponseEntity<>(userTypeService.GetUserType(),HttpStatus.OK);
+    }
+// Add the user type to the database *********************************
     @PostMapping("/add")
     public ResponseEntity<?> addUserType(@RequestBody UserTypeRequestDto userTypeRequestDto) throws UserTypeExistExceptions, NotExistException {
         if (userTypeRequestDto.getUserType().isEmpty())
@@ -26,16 +34,12 @@ public class UserTypeController {
 
         return new ResponseEntity<>(userTypeResponseDto,HttpStatus.OK);
     }
-
+//    Remove the user type from the database *********************************
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/remove")
     public ResponseEntity<?> removeUserType(@RequestBody UserTypeRequestDto userTypeRequestDto){
         UserTypeResponseDto userTypeResponseDto=userTypeService.UserTypeRemove(userTypeRequestDto);
         return new ResponseEntity<>(userTypeResponseDto,HttpStatus.OK);
-    }
-
-    @GetMapping("/all")
-    public ResponseEntity<?> getUserType(){
-        return new ResponseEntity<>(userTypeService.GetUserType(),HttpStatus.OK);
     }
 
 }

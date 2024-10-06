@@ -19,6 +19,18 @@ private  final UserTypeRepo userTypeRepo;
         this.userTypeRepo = userTypeRepo;
     }
 
+    public List<UserTypeResponseDto> GetUserType(){
+        List<UserTypeModel> userTypeModels = userTypeRepo.findAll();
+        List<UserTypeResponseDto> userTypeResponseDtos=new ArrayList<>();
+        for (UserTypeModel userTypeModel : userTypeModels) {
+            UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
+            userTypeResponseDto.setUserType(userTypeModel.getType());
+            userTypeResponseDto.setId(userTypeModel.getId());
+            userTypeResponseDtos.add(userTypeResponseDto);
+        }
+        return userTypeResponseDtos;
+    }
+
     public UserTypeResponseDto addUserType(UserTypeRequestDto userTypeRequestDto) throws UserTypeExistExceptions {
         UserTypeModel userTypeModel = new UserTypeModel();
         UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
@@ -42,17 +54,5 @@ private  final UserTypeRepo userTypeRepo;
         userTypeRepo.delete(userTypeModel);
         userTypeResponseDto.setMessage("User Type Removed Successfully");
         return userTypeResponseDto;
-    }
-
-    public List<UserTypeResponseDto> GetUserType(){
-        List<UserTypeModel> userTypeModels = userTypeRepo.findAll();
-        List<UserTypeResponseDto> userTypeResponseDtos=new ArrayList<>();
-        for (UserTypeModel userTypeModel : userTypeModels) {
-           UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
-           userTypeResponseDto.setUserType(userTypeModel.getType());
-           userTypeResponseDto.setId(userTypeModel.getId());
-           userTypeResponseDtos.add(userTypeResponseDto);
-        }
-        return userTypeResponseDtos;
     }
 }
