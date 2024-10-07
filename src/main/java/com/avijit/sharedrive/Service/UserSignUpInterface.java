@@ -1,8 +1,8 @@
 package com.avijit.sharedrive.Service;
 
 import com.avijit.sharedrive.DTO.SignUpRequestDto;
+import com.avijit.sharedrive.Exceptions.UserExist;
 
 public interface UserSignUpInterface {
-    boolean existsByUsername(String userName);
-    void signUpUser(SignUpRequestDto signUpRequestDto);
+    void signUpUser(SignUpRequestDto signUpRequestDto) throws UserExist;
 }

@@ -25,4 +25,10 @@ public class GlobelExceptionHandler {
         ErrorResponseDto errorResponseDto = new ErrorResponseDto(HttpStatus.FOUND.value(), e.getMessage());
         return new ResponseEntity<>(errorResponseDto,HttpStatus.FOUND);
     }
+
+    @ExceptionHandler(UserExist.class)
+    public ResponseEntity<?> handleUserExist(UserExist e){
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto(HttpStatus.FOUND.value(), e.getMessage());
+        return new ResponseEntity<>(errorResponseDto,HttpStatus.FOUND);
+    }
 }
