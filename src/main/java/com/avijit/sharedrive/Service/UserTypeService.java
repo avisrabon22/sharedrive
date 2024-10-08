@@ -52,7 +52,7 @@ private  final UserTypeRepo userTypeRepo;
         UserTypeModel userTypeModel = userTypeRepo.findByType(userTypeRequestDto.getUserType());
         UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
 
-        userTypeRepo.delete(userTypeModel);
+        userTypeRepo.deleteById(userTypeModel.getId());
 
         userTypeResponseDto.setMessage(userTypeModel.getType()+" User Type Removed Successfully");
         return userTypeResponseDto;

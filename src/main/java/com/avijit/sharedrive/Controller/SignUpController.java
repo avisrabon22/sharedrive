@@ -8,13 +8,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/v1/public")
 public class SignUpController {
     private final UserSignUpInterface userSignUpInterface;
 
     public SignUpController(UserSignUpInterface userSignUpInterface) {
         this.userSignUpInterface = userSignUpInterface;
     }
+
 
     @PostMapping("/signup")
     public ResponseEntity<?> signUpUser(@RequestBody SignUpRequestDto signUpRequestDto) throws UserExist {

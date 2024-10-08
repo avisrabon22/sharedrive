@@ -25,6 +25,7 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
+                .requestMatchers("/api/v1/public/**").permitAll()
                 .anyRequest().authenticated()
         );
         http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -33,20 +34,20 @@ public class SpringSecurityConfig {
         return http.build();
     }
 
-    @Bean
-    public UserDetailsService userDetailsService() {
-        UserDetails user= User.withUsername("Avijit")
-                .password("{noop}avijit")
-                .roles("USER")
-                .build();
-
-        UserDetails admin= User.withUsername("Admin")
-                .password("{noop}admin")
-                .roles("ADMIN")
-                .build();
-
-        return new InMemoryUserDetailsManager(user,admin);
-    }
+//    @Bean
+//    public UserDetailsService userDetailsService() {
+//        UserDetails user= User.withUsername("Avijit")
+//                .password("{noop}avijit")
+//                .roles("USER")
+//                .build();
+//
+//        UserDetails admin= User.withUsername("Admin")
+//                .password("{noop}admin")
+//                .roles("ADMIN")
+//                .build();
+//
+//        return new InMemoryUserDetailsManager(user,admin);
+//    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){

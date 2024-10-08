@@ -9,6 +9,8 @@ import lombok.Setter;
 @Entity
 public class UserModel extends BaseModel{
     @Column(nullable = false)
+    private String userFullName;
+    @Column(nullable = false)
     private String userName;
     @Column(nullable = false)
     private String userPassword;

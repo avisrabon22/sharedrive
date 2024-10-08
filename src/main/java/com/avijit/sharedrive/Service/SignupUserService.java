@@ -1,29 +1,25 @@
 package com.avijit.sharedrive.Service;
 
 import com.avijit.sharedrive.DAO.UserRepo;
+import com.avijit.sharedrive.DAO.UserTypeRepo;
 import com.avijit.sharedrive.DTO.SignUpRequestDto;
+import com.avijit.sharedrive.Exceptions.NotExistException;
 import com.avijit.sharedrive.Exceptions.UserExist;
 import com.avijit.sharedrive.Model.UserModel;
 import com.avijit.sharedrive.Model.UserTypeModel;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
-import org.springframework.security.provisioning.UserDetailsManager;
 import org.springframework.stereotype.Service;
 
-import javax.sql.DataSource;
 
 @Service
 public class SignupUserService implements UserSignUpInterface {
     private final UserRepo userRepo;
-    private final DataSource dataSource;
+    private final UserTypeRepo userTypeRepo;
     private final PasswordEncoder passwordEncoder;
 
-    public SignupUserService(UserRepo userRepo, DataSource dataSource, PasswordEncoder passwordEncoder) {
+    public SignupUserService(UserRepo userRepo, UserTypeRepo userTypeRepo, PasswordEncoder passwordEncoder) {
         this.userRepo = userRepo;
-        this.dataSource = dataSource;
+        this.userTypeRepo = userTypeRepo;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -31,19 +27,23 @@ public class SignupUserService implements UserSignUpInterface {
     @Override
     public void signUpUser(SignUpRequestDto signUpRequestDto) throws UserExist {
         UserModel userModel = new UserModel();
-        JdbcUserDetailsManager jdbcUserDetailsManager = new JdbcUserDetailsManager(dataSource);
+        UserModel user = userRepo.findByUserName(signUpRequestDto.getUserName());
+        UserTypeModel userTypeModel = userTypeRepo.findByType(signUpRequestDto.getUserRole());
 
-        if (jdbcUserDetailsManager.userExists(signUpRequestDto.getUserName()))
+        if (user != null)
             throw new UserExist("User already exist!");
 
-        UserDetails user = User
-                .withUsername(signUpRequestDto.getUserName())
-                .password(passwordEncoder.encode(signUpRequestDto.getUserPassword()))
-                .roles(signUpRequestDto.getUserRole())
-                .build();
+        if (userTypeModel == null)
+            throw new NotExistException("User Type not found!");
 
-        jdbcUserDetailsManager.createUser(user);
-    }
+        userModel.setUserName(signUpRequestDto.getUserName());
+        userModel.setUserPassword(passwordEncoder.encode(signUpRequestDto.getUserPassword()));
+        userModel.setUserFullName(signUpRequestDto.getUserFullName());
+        userModel.setUserPhone(signUpRequestDto.getUserPhone());
+        userModel.setUserAddress(signUpRequestDto.getUserAddress());
+        userModel.setUserRole(userTypeModel);
+        userRepo.save(userModel);
+        }
 
 
 
