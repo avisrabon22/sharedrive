@@ -25,29 +25,31 @@ public class SpringSecurityConfig {
     @Bean
     SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
+//                        .anyRequest().permitAll())
                 .requestMatchers("/api/v1/public/**").permitAll()
-                .anyRequest().authenticated()
-        );
+                .anyRequest().authenticated())
+
+                .csrf().disable();
         http.sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 //        http.formLogin(withDefaults());
         http.httpBasic(withDefaults());
         return http.build();
     }
 
-//    @Bean
-//    public UserDetailsService userDetailsService() {
-//        UserDetails user= User.withUsername("Avijit")
-//                .password("{noop}avijit")
-//                .roles("USER")
-//                .build();
-//
-//        UserDetails admin= User.withUsername("Admin")
-//                .password("{noop}admin")
-//                .roles("ADMIN")
-//                .build();
-//
-//        return new InMemoryUserDetailsManager(user,admin);
-//    }
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user= User.withUsername("Avijit")
+                .password("{noop}avijit")
+                .roles("USER")
+                .build();
+
+        UserDetails admin= User.withUsername("Admin")
+                .password("$2a$12$4ijdNPaY8bUvFDbR6D1NmeRCAMaFaoHfnr1ocPr5JXiQN22aoJOTS")
+                .roles("ADMIN")
+                .build();
+
+        return new InMemoryUserDetailsManager(user,admin);
+    }
 
     @Bean
     public PasswordEncoder passwordEncoder(){

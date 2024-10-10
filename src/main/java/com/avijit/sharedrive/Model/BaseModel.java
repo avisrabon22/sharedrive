@@ -3,6 +3,8 @@ package com.avijit.sharedrive.Model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -21,7 +23,7 @@ public class BaseModel {
     @LastModifiedDate
     @Column(nullable = false)
     private LocalDateTime updatedAt;
-    private String deletedAt;
+    private LocalDateTime deletedAt;
 
 
     @PrePersist
