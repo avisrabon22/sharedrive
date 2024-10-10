@@ -49,6 +49,8 @@ private final UserRepo userRepo;
         userTypeModel.setType(userTypeRequestDto.getUserType());
         userTypeRepo.save(userTypeModel);
         userTypeResponseDto.setMessage("User Type Added Successfully");
+        userTypeResponseDto.setUserType(userTypeRequestDto.getUserType());
+        userTypeResponseDto.setId(userTypeModel.getId());
         return userTypeResponseDto;
     }
 
@@ -56,21 +58,18 @@ private final UserRepo userRepo;
     public UserTypeResponseDto UserTypeRemove(UserTypeRequestDto userTypeRequestDto) {
         UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
         UserTypeModel userTypeModel = userTypeRepo.findByType(userTypeRequestDto.getUserType());
-        Optional<List<UserModel>> userModel = userRepo.findByUserRole_Id(userTypeModel.getId());
+        List<UserModel> userModel = userRepo.findByUserRole_Id(userTypeModel.getId());
 
-        userModel.ifPresent(
-                userModels -> {
-                    for (UserModel user : userModels) {
-                        System.out.println(user);
-                    }
-                }
-        );
-
-        if(userModel.isPresent())
+        if(userModel.isEmpty()) {
+            userTypeRepo.deleteById(userTypeModel.getId());
+            userTypeResponseDto.setUserType(userTypeRequestDto.getUserType());
+            userTypeResponseDto.setId(userTypeModel.getId());
+            userTypeResponseDto.setMessage(userTypeModel.getType()+" User Type Removed Successfully");
+        }
+        else {
             throw new UserTypeExistExceptions(userTypeModel.getType()+" user type is used, please remove from user first");
+        }
 
-        userTypeRepo.deleteById(userTypeModel.getId());
-        userTypeResponseDto.setMessage(userTypeModel.getType()+" User Type Removed Successfully");
         return userTypeResponseDto;
     }
 }
