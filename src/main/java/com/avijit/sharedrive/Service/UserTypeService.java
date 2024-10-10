@@ -1,20 +1,25 @@
 package com.avijit.sharedrive.Service;
 
+import com.avijit.sharedrive.DAO.UserRepo;
 import com.avijit.sharedrive.DAO.UserTypeRepo;
 import com.avijit.sharedrive.DTO.UserTypeRequestDto;
 import com.avijit.sharedrive.DTO.UserTypeResponseDto;
 import com.avijit.sharedrive.Exceptions.UserTypeExistExceptions;
+import com.avijit.sharedrive.Model.UserModel;
 import com.avijit.sharedrive.Model.UserTypeModel;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserTypeService implements UserTypeInterface{
 private  final UserTypeRepo userTypeRepo;
+private final UserRepo userRepo;
 
-    public UserTypeService(UserTypeRepo userTypeRepo) {
+    public UserTypeService(UserTypeRepo userTypeRepo, UserRepo userRepo) {
         this.userTypeRepo = userTypeRepo;
+        this.userRepo = userRepo;
     }
 
 //    Get the all user type from the database *********************************
@@ -49,11 +54,22 @@ private  final UserTypeRepo userTypeRepo;
 
 //    Remove the user type from the database *********************************
     public UserTypeResponseDto UserTypeRemove(UserTypeRequestDto userTypeRequestDto) {
-        UserTypeModel userTypeModel = userTypeRepo.findByType(userTypeRequestDto.getUserType());
         UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
+        UserTypeModel userTypeModel = userTypeRepo.findByType(userTypeRequestDto.getUserType());
+        Optional<List<UserModel>> userModel = userRepo.findByUserRole_Id(userTypeModel.getId());
+
+        userModel.ifPresent(
+                userModels -> {
+                    for (UserModel user : userModels) {
+                        System.out.println(user);
+                    }
+                }
+        );
+
+        if(userModel.isPresent())
+            throw new UserTypeExistExceptions(userTypeModel.getType()+" user type is used, please remove from user first");
 
         userTypeRepo.deleteById(userTypeModel.getId());
-
         userTypeResponseDto.setMessage(userTypeModel.getType()+" User Type Removed Successfully");
         return userTypeResponseDto;
     }
