@@ -17,7 +17,7 @@ public class UserModel extends BaseModel{
     @Column(nullable = false)
     private String userPhone;
     private String userAddress;
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false,name = "user_type_id")
     private UserTypeModel userRole;
 }

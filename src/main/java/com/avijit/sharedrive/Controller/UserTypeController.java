@@ -1,5 +1,4 @@
 package com.avijit.sharedrive.Controller;
-
 import com.avijit.sharedrive.DTO.UserTypeRequestDto;
 import com.avijit.sharedrive.DTO.UserTypeResponseDto;
 import com.avijit.sharedrive.Exceptions.NotExistException;
@@ -21,15 +20,14 @@ public class UserTypeController {
     }
 
 // Get the all user type from the database *********************************
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('Admin')")
     @GetMapping("/all")
     public ResponseEntity<?> getUserType(){
         return new ResponseEntity<>(userTypeService.GetUserType(),HttpStatus.OK);
     }
 
-
     // Add the user type to the database *********************************
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('Admin')")
     @PostMapping("/add")
     public ResponseEntity<?> addUserType(@RequestBody UserTypeRequestDto userTypeRequestDto) throws UserTypeExistExceptions, NotExistException {
         if (userTypeRequestDto.getUserType().isEmpty())
@@ -39,9 +37,8 @@ public class UserTypeController {
         return new ResponseEntity<>(userTypeResponseDto,HttpStatus.OK);
     }
 
-
     //    Remove the user type from the database *********************************
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/remove")
     public ResponseEntity<?> removeUserType(@RequestBody UserTypeRequestDto userTypeRequestDto){
         UserTypeResponseDto userTypeResponseDto=userTypeService.UserTypeRemove(userTypeRequestDto);
