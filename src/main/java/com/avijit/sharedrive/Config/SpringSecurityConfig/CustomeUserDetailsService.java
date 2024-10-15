@@ -1,13 +1,17 @@
 package com.avijit.sharedrive.Config.SpringSecurityConfig;
 
 import com.avijit.sharedrive.DAO.UserRepo;
+import com.avijit.sharedrive.Exceptions.NotExistException;
 import com.avijit.sharedrive.Model.UserModel;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
-@Service
+import java.util.Objects;
+
+@Component
 public class CustomeUserDetailsService implements UserDetailsService {
  private final UserRepo userRepo;
 
@@ -17,10 +21,11 @@ public class CustomeUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserModel user = userRepo.findByUserName(username);
-        if(user==null)
-            throw new UsernameNotFoundException("User is invalid!!");
+        UserModel user = userRepo.findByUserName(username); // find user by username
+        if(user != null) {
+            return new CustomeUserDetails(user); // return user details
+        }
 
-        return new CustomeUserDetails(user);
+        throw new NotExistException(username+" is invalid!!"); // throw exception if user not found
     }
 }

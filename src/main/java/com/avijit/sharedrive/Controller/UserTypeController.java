@@ -20,14 +20,13 @@ public class UserTypeController {
     }
 
 // Get the all user type from the database *********************************
-    @PreAuthorize("hasRole('Admin')")
-    @GetMapping("/all")
-    public ResponseEntity<?> getUserType(){
-        return new ResponseEntity<>(userTypeService.GetUserType(),HttpStatus.OK);
-    }
+
+@GetMapping("/all")
+public ResponseEntity<?> getUserType(){
+    return new ResponseEntity<>(userTypeService.GetUserType(),HttpStatus.OK);
+}
 
     // Add the user type to the database *********************************
-    @PreAuthorize("hasRole('Admin')")
     @PostMapping("/add")
     public ResponseEntity<?> addUserType(@RequestBody UserTypeRequestDto userTypeRequestDto) throws UserTypeExistExceptions, NotExistException {
         if (userTypeRequestDto.getUserType().isEmpty())
@@ -38,7 +37,6 @@ public class UserTypeController {
     }
 
     //    Remove the user type from the database *********************************
-    @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/remove")
     public ResponseEntity<?> removeUserType(@RequestBody UserTypeRequestDto userTypeRequestDto){
         UserTypeResponseDto userTypeResponseDto=userTypeService.UserTypeRemove(userTypeRequestDto);

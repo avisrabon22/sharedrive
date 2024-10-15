@@ -4,6 +4,11 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 @Getter
 @Setter
 @Entity
@@ -17,7 +22,6 @@ public class UserModel extends BaseModel{
     @Column(nullable = false)
     private String userPhone;
     private String userAddress;
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(nullable = false,name = "user_type_id")
-    private UserTypeModel userRole;
+    @ManyToMany(fetch = FetchType.EAGER)
+    private List<UserTypeModel> userRole = new ArrayList<>();
 }
