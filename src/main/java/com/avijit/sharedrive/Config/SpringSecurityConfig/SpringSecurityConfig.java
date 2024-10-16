@@ -25,6 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity
 public class SpringSecurityConfig {
     private final CustomeUserDetailsService customeUserDetailsService;
 
@@ -38,7 +39,7 @@ public class SpringSecurityConfig {
                 .csrf(customizer->customizer.disable())
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/v1/public/**").permitAll()
-                        .requestMatchers("/api/v1/userType/**").hasRole("Admin")
+//                        .requestMatchers("/api/v1/userType/**").hasRole("ADMIN")
 //                .anyRequest().permitAll()
                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
@@ -47,9 +48,12 @@ public class SpringSecurityConfig {
         .build();
     }
 
-    public void authenticationManager(AuthenticationManagerBuilder config) throws Exception {
-        config.userDetailsService(customeUserDetailsService).passwordEncoder(passwordEncoder());
-
+    @Bean
+    public AuthenticationProvider authenticationManager() throws Exception {
+       DaoAuthenticationProvider daoAuthenticationProvider= new DaoAuthenticationProvider();
+       daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
+       daoAuthenticationProvider.setUserDetailsService(customeUserDetailsService);
+       return daoAuthenticationProvider;
     }
 
 
@@ -58,7 +62,6 @@ public class SpringSecurityConfig {
     public PasswordEncoder passwordEncoder(){
         return  new BCryptPasswordEncoder();
     }
-
 
 
 }

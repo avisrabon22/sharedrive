@@ -21,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class FileHandleService implements FileHandlingInterface{
@@ -46,14 +47,18 @@ public class FileHandleService implements FileHandlingInterface{
 //   copy the file to the target location (replacing existing file with the same name)
         Files.copy(file.getInputStream(),filePathToSave, StandardCopyOption.REPLACE_EXISTING);
 //    set the file details
-        UserModel userModel;
+        Optional<UserModel> userModel;
         fileDetailsModel.setFileName(file.getOriginalFilename());
         fileDetailsModel.setFileExtension(file.getContentType());
         fileDetailsModel.setFilePath(filePathToSave.toString());
         fileDetailsModel.setFileSize(file.getSize());
 //Fetch the user from the database to set the file owner
         userModel = userRepo.findByUserName("avisrabon22@gmail.com");
-        fileDetailsModel.setFileOwner(userModel);
+        if (userModel.isEmpty()) {
+            throw new RuntimeException("User not found");
+        }
+        UserModel user = userModel.get();
+        fileDetailsModel.setFileOwner(user);
 //   save the file details to the database
         fileHandleRepo.save(fileDetailsModel);
     }

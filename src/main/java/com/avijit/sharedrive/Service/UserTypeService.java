@@ -4,6 +4,7 @@ import com.avijit.sharedrive.DAO.UserRepo;
 import com.avijit.sharedrive.DAO.UserTypeRepo;
 import com.avijit.sharedrive.DTO.UserTypeRequestDto;
 import com.avijit.sharedrive.DTO.UserTypeResponseDto;
+import com.avijit.sharedrive.Exceptions.NotExistException;
 import com.avijit.sharedrive.Exceptions.UserTypeExistExceptions;
 import com.avijit.sharedrive.Model.UserModel;
 import com.avijit.sharedrive.Model.UserTypeModel;
@@ -57,17 +58,21 @@ private final UserRepo userRepo;
 //    Remove the user type from the database *********************************
     public UserTypeResponseDto UserTypeRemove(UserTypeRequestDto userTypeRequestDto) {
         UserTypeResponseDto userTypeResponseDto = new UserTypeResponseDto();
-        UserTypeModel userTypeModel = userTypeRepo.findByType(userTypeRequestDto.getUserType());
-        List<UserModel> userModel = userRepo.findByUserRole_Id(userTypeModel.getId());
+        Optional<UserTypeModel> userTypeModel = userTypeRepo.findByType(userTypeRequestDto.getUserType());
+        if (userTypeModel.isEmpty()) {
+            throw  new NotExistException("User Type Not Found");
+        }
+
+        List<UserModel> userModel = userRepo.findByUserRole_Id(userTypeModel.get().getId());
 
         if(userModel.isEmpty()) {
-            userTypeRepo.deleteById(userTypeModel.getId());
+            userTypeRepo.deleteById(userTypeModel.get().getId());
             userTypeResponseDto.setUserType(userTypeRequestDto.getUserType());
-            userTypeResponseDto.setId(userTypeModel.getId());
-            userTypeResponseDto.setMessage(userTypeModel.getType()+" User Type Removed Successfully");
+            userTypeResponseDto.setId(userTypeModel.get().getId());
+            userTypeResponseDto.setMessage(userTypeModel.get().getType()+" type user removed successfully");
         }
         else {
-            throw new UserTypeExistExceptions(userTypeModel.getType()+" user type is used, please remove from user first");
+            throw new UserTypeExistExceptions(userTypeModel.get().getType()+" user type is used, please remove from user first");
         }
 
         return userTypeResponseDto;

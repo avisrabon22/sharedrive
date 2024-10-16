@@ -11,10 +11,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.*;
 import java.util.List;
-import java.util.Set;
 
 
 @Service
@@ -35,21 +33,19 @@ public class SignupUserService implements UserSignUpInterface {
         UserModel userModel = new UserModel();
         List<UserTypeModel> userRole = new ArrayList<>();
 //     check user exist or not
-        UserModel user = userRepo.findByUserName(signUpRequestDto.getUserName());
+        Optional<UserModel> user = userRepo.findByUserName(signUpRequestDto.getUserName());
 //        check user type exist or not
-        UserTypeModel userTypeModel = userTypeRepo.findByType(signUpRequestDto.getUserRole());
+        Optional<UserTypeModel> userTypeModel = userTypeRepo.findByType(signUpRequestDto.getUserRole());
 
-
-
-        if (user != null) {
-            throw new UserExist("User already exist!");
+        if (user.isPresent()) {
+            throw new UserExist(user.get().getUserName()+" already exist!");
         }
 
-        if (userTypeModel == null) {
+        if (userTypeModel.isEmpty()) {
             throw new NotExistException("User Type not found!");
         }
 // set user role
-        userRole.add(userTypeModel);
+        userRole.add(userTypeModel.get());
 // set user details
         userModel.setUserName(signUpRequestDto.getUserName());
         userModel.setUserPassword(passwordEncoder.encode(signUpRequestDto.getUserPassword()));
