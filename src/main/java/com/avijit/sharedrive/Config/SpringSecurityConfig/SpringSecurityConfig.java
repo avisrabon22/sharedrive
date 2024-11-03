@@ -13,7 +13,9 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -22,12 +24,10 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
-
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity
 public class SpringSecurityConfig {
-    private final CustomeUserDetailsService customeUserDetailsService;
+    private final UserDetailsService customeUserDetailsService;
 
     public SpringSecurityConfig(CustomeUserDetailsService customeUserDetailsService) {
         this.customeUserDetailsService = customeUserDetailsService;
@@ -36,26 +36,23 @@ public class SpringSecurityConfig {
     @Bean
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
         return http
-                .csrf(customizer->customizer.disable())
+                .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/api/v1/public/**").permitAll()
-//                        .requestMatchers("/api/v1/userType/**").hasRole("ADMIN")
-//                .anyRequest().permitAll()
+                .requestMatchers("/api/v1/userType/**").hasAuthority("Admin")
                 .anyRequest().authenticated())
                 .httpBasic(Customizer.withDefaults())
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 //      .formLogin(Customizer.withDefaults())
         .build();
     }
-
-    @Bean
-    public AuthenticationProvider authenticationManager() throws Exception {
-       DaoAuthenticationProvider daoAuthenticationProvider= new DaoAuthenticationProvider();
-       daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-       daoAuthenticationProvider.setUserDetailsService(customeUserDetailsService);
-       return daoAuthenticationProvider;
+   @Bean
+    protected  AuthenticationManager configure(HttpSecurity auth) throws Exception {
+        return auth.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(customeUserDetailsService)
+                .passwordEncoder(passwordEncoder())
+                .and().build();
     }
-
 
 //    Password encoder ***************************************************
     @Bean

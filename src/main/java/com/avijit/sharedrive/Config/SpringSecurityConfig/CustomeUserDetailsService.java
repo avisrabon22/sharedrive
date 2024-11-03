@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Objects;
 import java.util.Optional;
 
-@Component
+@Service
 public class CustomeUserDetailsService implements UserDetailsService {
     private final UserRepo userRepo;
 
@@ -24,20 +24,18 @@ public class CustomeUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Optional<UserModel> userOptional = userRepo.findByUserName(username); // find user by username
-        if (userOptional.isPresent()) {
-            UserModel userModel = userOptional.get();
-            UserDetails userDetails = org.springframework.security.core.userdetails.User
-                    .builder()
-                    .username(userModel.getUserName())
-                    .password(userModel.getUserPassword())
-                    .roles()
-                    .authorities(userModel.getUserRole().stream().map(r -> new CustomeGrantedAuthority(r)).toList())
-                    .build();
 
-            return userDetails;
-            // return user details
-        } else
-            throw new NotExistException(username + " is invalid!!"); // throw exception if user not found
+        if (userOptional.isPresent())
+        {
+            return new CustomeUserDetails(
+                         userOptional.get().getUserName(),
+                                 userOptional.get().getUserPassword(),
+                                 userOptional.get().getUserRole());
+        }
+        else
+        {
+            throw new UsernameNotFoundException("User not found");
+        }
 
     }
 }

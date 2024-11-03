@@ -8,6 +8,9 @@ import com.avijit.sharedrive.Service.UserTypeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -19,15 +22,16 @@ public class UserTypeController {
         this.userTypeService = userTypeService;
     }
 
+
+    @GetMapping("/all")
+    public ResponseEntity<?> getUserType(){
+        return new ResponseEntity<>(userTypeService.GetUserType(),HttpStatus.OK);
+    }
+
 // Get the all user type from the database *********************************
-@PreAuthorize("hasRole('ADMIN')")
-@GetMapping("/all")
-public ResponseEntity<?> getUserType(){
-    return new ResponseEntity<>(userTypeService.GetUserType(),HttpStatus.OK);
-}
 
     // Add the user type to the database *********************************
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('Admin')")
     @PostMapping("/add")
     public ResponseEntity<?> addUserType(@RequestBody UserTypeRequestDto userTypeRequestDto) throws UserTypeExistExceptions, NotExistException {
         if (userTypeRequestDto.getUserType().isEmpty())
@@ -38,7 +42,7 @@ public ResponseEntity<?> getUserType(){
     }
 
     //    Remove the user type from the database *********************************
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('Admin')")
     @DeleteMapping("/remove")
     public ResponseEntity<?> removeUserType(@RequestBody UserTypeRequestDto userTypeRequestDto){
         UserTypeResponseDto userTypeResponseDto=userTypeService.UserTypeRemove(userTypeRequestDto);
